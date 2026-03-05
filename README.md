@@ -15,7 +15,7 @@
 ---
 
 ## 📸 Simulation Interface (Level 3: Drone Assault)
-![Level 3: Drone Assault](./assets/level3_preview.png)
+![Level 3: Drone Assault](./assets/gameplay_view.png)
 
 ---
 
