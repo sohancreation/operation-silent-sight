@@ -299,14 +299,12 @@
 
     <script src="js/main.js"></script>
     <!-- MediaPipe CJS bundle loaded locally — shim exports so classes are available as window.vision -->
-    <!-- MediaPipe Vision SDK from CDN for reliability -->
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3" crossorigin="anonymous"></script>
-    <script>
-        // Alias for compatibility with tracker.js
-        window.vision = {
-            FaceLandmarker: FaceLandmarker,
-            FilesetResolver: FilesetResolver
-        };
+    <!-- MediaPipe Vision SDK via Module for reliability -->
+    <script type="module">
+        import { FaceLandmarker, FilesetResolver } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3";
+        window.FaceLandmarker = FaceLandmarker;
+        window.FilesetResolver = FilesetResolver;
+        window.vision = { FaceLandmarker, FilesetResolver };
     </script>
     <script src="js/tracker.js"></script>
 </body>

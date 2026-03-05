@@ -50,6 +50,11 @@ window.EyeTracker = (function () {
        INIT — load model + start camera
        ══════════════════════════════════ */
     function init() {
+        if (!window.vision || !window.vision.FaceLandmarker) {
+            console.log("Waiting for eye tracking modules...");
+            setTimeout(init, 200);
+            return;
+        }
         setStatus('LOADING MODEL…', 'var(--amber)');
         setToggleBtn(false);
 
