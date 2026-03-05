@@ -1,23 +1,78 @@
-# Operation Silent Sight (prototype)
+# 👁 Operation Silent Sight
+### Neural Combat Interface (NCI) – Military Defense Simulator
 
-Minimal Unity scaffolding for the eye-controlled defense shooter concept. This is a code-only vertical slice that you can open in Unity 2022 LTS (or later) to wire up scenes, prefabs, and eye-tracking SDK of choice.
+[![Status: Operational](https://img.shields.io/badge/Status-Operational-green.svg)](#)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](#)
+[![Tech: MediaPipe](https://img.shields.io/badge/Tech-MediaPipe-orange.svg)](#)
 
-## How to run
-1. Open this folder as a Unity project (2022.3 LTS recommended).
-2. Create a canvas with a reticle `RectTransform` and attach `EyeAimingController` (plus `DummyEyeInput` for non-eye hardware).
-3. Add `EyeCombatController` to the player rig and assign the aiming component, a `WeaponConfig` asset, and `MissionManager`.
-4. Build NavMesh, create enemy prefabs with `EnemyHealth` + `EnemyController`, and tag head colliders as `Head` for multipliers.
-5. Create `MissionDefinition` assets for each level (waves, objectives, accuracy requirement) and link to `MissionManager`.
-6. Use the dummy input for keyboard/mouse: left click = fire, double click within 0.25s = reload, hold click ~0.6s = special.
+**Operation Silent Sight** is a high-stakes, web-based military simulation that leverages cutting-edge facial tracking technology to put you in the role of an elite NCI operator. Aim with your eyes, blink to engage hostiles, and defend classified perimeters in a browser-native tactical environment.
 
-## Folder map
-- `Assets/Scripts/EyeControl`: input abstraction + dummy fallback.
-- `Assets/Scripts/Systems`: aiming, combat, mission, scoreboard.
-- `Assets/Scripts/Enemies`: basic health + NavMesh-driven controller.
-- `Assets/ScriptableObjects`: configs for missions and weapons.
+---
 
-## Next steps
-- Replace `DummyEyeInput` with your eye-tracking provider (e.g., Tobii XR, OpenXR eye gaze) by implementing `IEyeInput`.
-- Build level prefabs per design doc: Training Facility, Checkpoint Defense, Drone Assault, Base Breach, Night Operation.
-- Hook friend-or-foe penalties and civilian detection via collider tags and `MissionManager.OnMissionFail`.
-- Add VFX/UI polish: thermal overlay on long blink, reticle bloom feedback, combo meter, headshot callouts.
+## 🚀 Experience the Simulation
+**Deployed at:** [sohancreation.github.io/operation-silent-sight/](https://sohancreation.github.io/operation-silent-sight/)
+
+---
+
+## 🛠 Features
+
+- **Neural Aiming Matrix**: High-precision cursor control mapped to facial orientation and eye movement.
+- **Biometric Engagement**: Advanced blink detection logic (powered by MediaPipe) for firing and reloading.
+- **Level-Based Missions**: 5 high-intensity levels ranging from training facilities to secret base breaches.
+- **Tactical HUD**: Real-time accuracy tracking, ammunition pips, and mission status notifications.
+- **Military Aesthetic**: CRT scanlines, thermal overlays, and a high-fidelity "classified" UI design.
+- **No Extra Hardware**: Operates using a standard consumer-grade webcam—no expensive eye trackers required.
+
+---
+
+## 🎮 Controls
+
+| Action | Bio-Input (Eye Tracking) | Keyboard/Mouse Backup |
+| :--- | :--- | :--- |
+| **Aim** | Move Head/Eyes | Move Mouse |
+| **Fire** | Single Blink | Left Click |
+| **Reload** | Quick Double Blink | Double Click |
+| **Special Ability** | Sustained Long Blink (>600ms) | Right Click / Hold 'Q' |
+
+---
+
+## 💻 Technology Stack
+
+- **Computer Vision**: [MediaPipe Face Landmarker](https://developers.google.com/mediapipe/solutions/vision/face_landmarker) for real-time 3D facial landmark detection.
+- **Rendering**: HTML5 Canvas API for game logic and 60fps performance.
+- **Styling**: Vanilla CSS3 utilizing CSS Variables for dynamic thermal/hit effects and scanline filters.
+- **Audio**: Custom spatial sound engine for immersion.
+
+---
+
+## 📥 Local Setup
+
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/sohancreation/operation-silent-sight.git
+   cd operation-silent-sight
+   ```
+
+2. **Run Locally**:
+   Simply open `index.html` in any modern browser (Chrome/Edge recommended for best webcam performance).
+   *Note: Due to browser security, some features may require a local server.*
+   ```bash
+   npx serve
+   ```
+
+---
+
+## 📜 Mission Log (Development)
+- [x] Initial NCI Calibration Logic
+- [x] Web-Native Face Mesh Integration
+- [x] Tactile Blink detection & Smoothing
+- [x] Multi-level mission progression
+- [x] Dynamic HUD & UI System
+- [ ] Global Leaderboard Sync (Planned)
+
+---
+
+## ⚖️ License
+Distributed under the MIT License. See `LICENSE` for more information.
+
+**Operator Note**: *This is a training simulation. Accuracy is paramount. Good luck, Operator.*
