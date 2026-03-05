@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Operation Silent Sight – NCI Military Simulator</title>
+    <meta name="description"
+        content="A classified military defense simulation controlled by eye movement. Neural Combat Interface – NCI. Aim with your eyes, blink to shoot." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Share+Tech+Mono&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+    <div id="app">
+
+        <div id="tracker-ui"
+            style="position: fixed; top: 10px; right: 10px; z-index: 9999; display: flex; flex-direction: column; align-items: flex-end; pointer-events: none;">
+
+            <!-- Music toggle -->
+            <div style="display: flex; gap: 5px; margin-bottom: 5px; pointer-events: auto;">
+                <button id="btnToggleMusic" onclick="UI.toggleMusic()"
+                    style="background: rgba(0,0,0,0.7); border: 1px solid var(--green); color: var(--green); cursor: pointer; padding: 4px 10px; font-family: var(--font-mono); font-size: 10px; letter-spacing:1px;">
+                    🎵 MUSIC: ON
+                </button>
+            </div>
+
+            <!-- Eye tracking toggle -->
+            <div style="margin-bottom: 5px; pointer-events: auto;">
+                <button id="eye-toggle-btn" onclick="window.EyeTracker && window.EyeTracker.toggle()"
+                    style="background: rgba(0,0,0,0.7); border: 1px solid var(--amber); color: var(--amber); cursor: pointer; padding: 4px 10px; font-family: var(--font-mono); font-size: 10px; letter-spacing:1px; width:100%;">
+                    👁 EYE CONTROL: OFF
+                </button>
+            </div>
+
+            <!-- Status + webcam preview -->
+            <div id="tracker-status"
+                style="color: var(--amber); font-size: 10px; margin-bottom: 4px; background: rgba(0,0,0,0.6); padding: 2px 6px; font-family: var(--font-main); text-align:right;">
+                WEBCAM OFF
+            </div>
+            <video id="webcam" autoplay playsinline muted
+                style="width: 160px; height: 120px; transform: scaleX(-1); border: 1px solid var(--green); display: none;"></video>
+            <canvas id="tracker-canvas"
+                style="width: 160px; height: 120px; transform: scaleX(-1); border: 1px solid var(--green); background: rgba(0,20,10,0.85); display: none;"></canvas>
+        </div>
+
+        <!-- ════════════════════ SCREEN: BOOT ════════════════════ -->
+        <div id="screen-boot" class="screen active">
+            <div class="boot-lines" id="bootLines"></div>
+            <div class="boot-logo">
+                <div class="boot-classification">⚠ CLASSIFIED – LEVEL 5 ⚠</div>
+                <div class="boot-title">NEURAL COMBAT INTERFACE</div>
+                <div class="boot-subtitle">NCI v4.7.2 — Military Defense Simulation</div>
+                <div class="boot-progress-wrap">
+                    <div class="boot-progress-bar" id="bootBar"></div>
+                </div>
+                <div class="boot-status" id="bootStatus">INITIALIZING SYSTEM…</div>
+            </div>
+        </div>
+
+        <!-- ════════════════════ SCREEN: MAIN MENU ════════════════════ -->
+        <div id="screen-menu" class="screen">
+            <div class="menu-bg-grid"></div>
+            <div class="scanlines"></div>
+            <div class="menu-header">
+                <div class="menu-classify-badge">CLASSIFICATION: TOP SECRET</div>
+                <h1 class="menu-title">OPERATION<br /><span>SILENT SIGHT</span></h1>
+                <p class="menu-tagline">A classified defense system controlled entirely by eye movement</p>
+            </div>
+            <nav class="menu-nav" id="mainNav">
+                <button class="menu-btn" id="btnStart" onclick="Game.startNewGame()">
+                    <span class="btn-icon">▶</span> START MISSION
+                </button>
+                <button class="menu-btn" id="btnMenuMusicToggle" onclick="UI.toggleMusic()">
+                    🎵 MUSIC: ON
+                </button>
+                <button class="menu-btn" id="btnHowTo" onclick="UI.showScreen('screen-howto')">
+                    <span class="btn-icon">◈</span> BRIEFING / CONTROLS
+                </button>
+                <button class="menu-btn" id="btnScores" onclick="UI.showScoreboard()">
+                    <span class="btn-icon">◉</span> MISSION LOG
+                </button>
+                <button class="menu-btn secondary" id="btnExitApp" onclick="UI.quitGame()">
+                    <span class="btn-icon">✖</span> EXIT SIMULATION
+                </button>
+            </nav>
+            <div class="menu-footer">
+                <span>NCI SIMULATOR · FICTIONAL TRAINING ENVIRONMENT · NOT FOR OPERATIONAL USE</span>
+            </div>
+        </div>
+
+        <!-- ════════════════════ SCREEN: HOW TO PLAY ════════════════════ -->
+        <div id="screen-howto" class="screen">
+            <div class="scanlines"></div>
+            <div class="howto-container">
+                <h2 class="section-title">OPERATOR BRIEFING</h2>
+                <div class="briefing-grid">
+                    <div class="brief-card">
+                        <div class="brief-icon">👁</div>
+                        <h3>AIM</h3>
+                        <p>Move your <strong>mouse</strong> to aim the crosshair.<br />(Simulates eye tracking)</p>
+                    </div>
+                    <div class="brief-card">
+                        <div class="brief-icon">🔫</div>
+                        <h3>SHOOT</h3>
+                        <p><strong>Left Click</strong> to fire.<br />(Simulates eye blink)</p>
+                    </div>
+                    <div class="brief-card">
+                        <div class="brief-icon">🔄</div>
+                        <h3>RELOAD</h3>
+                        <p><strong>Double Click</strong> to reload.<br />(Simulates double blink)</p>
+                    </div>
+                    <div class="brief-card">
+                        <div class="brief-icon">⚡</div>
+                        <h3>SPECIAL</h3>
+                        <p><strong>Right Click / Hold Q</strong> for special ability.<br />(Simulates long blink)</p>
+                    </div>
+                    <div class="brief-card">
+                        <div class="brief-icon">🎯</div>
+                        <h3>OBJECTIVE</h3>
+                        <p>Eliminate hostiles, protect civilians, survive all 5 levels.</p>
+                    </div>
+                    <div class="brief-card">
+                        <div class="brief-icon">⚠</div>
+                        <h3>PENALTIES</h3>
+                        <p>Shooting civilians or friendly units reduces accuracy score.</p>
+                    </div>
+                </div>
+                <button class="menu-btn" onclick="UI.showScreen('screen-menu')">◀ RETURN TO BASE</button>
+            </div>
+        </div>
+
+        <!-- ════════════════════ SCREEN: SCOREBOARD ════════════════════ -->
+        <div id="screen-scores" class="screen">
+            <div class="scanlines"></div>
+            <div class="scores-container">
+                <h2 class="section-title">MISSION LOG</h2>
+                <div id="scoresList" class="scores-list"></div>
+                <button class="menu-btn" onclick="UI.showScreen('screen-menu')">◀ RETURN TO BASE</button>
+            </div>
+        </div>
+
+        <!-- ════════════════════ SCREEN: PROLOGUE ════════════════════ -->
+        <div id="screen-prologue" class="screen">
+            <div class="scanlines"></div>
+            <div class="prologue-container">
+                <div class="prologue-stamp">CLASSIFIED</div>
+                <div class="prologue-text" id="prologueText"></div>
+                <div class="prologue-continue" id="prologueContinue" style="display:none">
+                    <button class="menu-btn" id="btnStartLevel">▶ DEPLOY TO FIELD</button>
+                    <button class="menu-btn secondary" onclick="UI.showScreen('screen-menu')">◀ BACK TO BASE</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ════════════════════ SCREEN: LEVEL INTRO ════════════════════ -->
+        <div id="screen-level-intro" class="screen">
+            <div class="scanlines"></div>
+            <div class="level-intro-box">
+                <div class="level-intro-tag" id="introTag">LEVEL 1</div>
+                <h2 class="level-intro-name" id="introName">TRAINING FACILITY</h2>
+                <p class="level-intro-obj" id="introObj"></p>
+                <div class="level-intro-new" id="introNew"></div>
+                <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:10px;">
+                    <button class="menu-btn" id="btnDeployNow">▶ GO LIVE</button>
+                    <button class="menu-btn secondary" onclick="UI.showScreen('screen-menu')">◀ BACK TO BASE</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ════════════════════ SCREEN: GAME ════════════════════ -->
+        <div id="screen-game" class="screen">
+
+            <canvas id="gameCanvas"></canvas>
+
+            <!-- HUD -->
+            <div class="hud" id="hud">
+                <div class="hud-top">
+                    <!-- Quit Trigger (Far Left) -->
+                    <div class="hud-cell" style="pointer-events: auto; min-width: 100px;">
+                        <button class="menu-btn" onclick="Game.quitToMenu()"
+                            style="padding: 4px 10px; font-size: 9px; border-color: var(--red); color: var(--red); background: rgba(0,0,0,0.4); margin-bottom: 5px;">[✖]
+                            ABORT</button>
+                    </div>
+
+                    <div class="hud-cell">
+                        <div class="hud-label">MISSION</div>
+                        <div class="hud-val" id="hudLevel">LVL 1</div>
+                    </div>
+                    <div class="hud-cell hud-center-cell">
+                        <div class="hud-label">OBJECTIVE</div>
+                        <div class="hud-val hud-obj" id="hudObj">Shoot all targets</div>
+                    </div>
+                    <div class="hud-cell">
+                        <div class="hud-label">SCORE</div>
+                        <div class="hud-val" id="hudScore">0</div>
+                    </div>
+                </div>
+                <div class="hud-bottom">
+                    <div class="hud-ammo" id="hudAmmo">
+                        <div class="hud-label">AMMO</div>
+                        <div class="hud-ammo-pips" id="ammoPips"></div>
+                    </div>
+                    <div class="hud-accuracy">
+                        <div class="hud-label">ACCURACY</div>
+                        <div class="hud-acc-bar-wrap">
+                            <div class="hud-acc-bar" id="accBar"></div>
+                        </div>
+                        <div class="hud-val" id="hudAcc">100%</div>
+                    </div>
+                    <div class="hud-special" id="hudSpecial">
+                        <div class="hud-label">SPECIAL</div>
+                        <div class="hud-val" id="hudSpecialStatus">READY</div>
+                    </div>
+                    <div class="hud-time">
+                        <div class="hud-label">TIME</div>
+                        <div class="hud-val" id="hudTime">--</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Overlay effects -->
+            <div class="thermal-overlay" id="thermalOverlay"></div>
+            <div class="slowmo-overlay" id="slowmoOverlay"></div>
+            <div class="hit-flash" id="hitFlash"></div>
+            <div class="friendly-fire-flash" id="ffFlash"></div>
+
+            <!-- Popup messages -->
+            <div class="game-popup" id="gamePopup"></div>
+            <div class="kill-feed" id="killFeed"></div>
+            <div class="combo-display" id="comboDisplay"></div>
+        </div>
+
+        <!-- ════════════════════ SCREEN: MISSION COMPLETE ════════════════════ -->
+        <div id="screen-complete" class="screen">
+            <div class="scanlines"></div>
+            <div class="complete-box">
+                <div class="complete-badge" id="completeBadge">MISSION COMPLETE</div>
+                <h2 class="complete-level" id="completeLevel"></h2>
+                <div class="complete-stats" id="completeStats"></div>
+                <div class="complete-actions">
+                    <button class="menu-btn" id="btnNextLevel">▶ NEXT MISSION</button>
+                    <button class="menu-btn secondary" onclick="UI.showScreen('screen-menu')">⌂ MAIN BASE</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ════════════════════ SCREEN: GAME OVER ════════════════════ -->
+        <div id="screen-gameover" class="screen">
+            <div class="scanlines"></div>
+            <div class="gameover-box">
+                <div class="gameover-title">MISSION FAILED</div>
+                <div class="gameover-reason" id="gameoverReason"></div>
+                <div class="gameover-actions">
+                    <button class="menu-btn" id="btnRetry" onclick="Game.retryLevel()">&#x21BA; RETRY MISSION</button>
+                    <button class="menu-btn secondary" onclick="UI.showScreen('screen-menu')">&#x2302; MAIN
+                        BASE</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ════════════════════ SCREEN: FINAL VICTORY ════════════════════ -->
+        <div id="screen-victory" class="screen">
+            <div class="scanlines"></div>
+            <div class="victory-container">
+                <div class="victory-stars">★ ★ ★</div>
+                <div class="victory-title">OPERATION COMPLETE</div>
+                <div class="victory-subtitle">SILENT SIGHT – NCI PROGRAM VALIDATED</div>
+                <div class="victory-text">
+                    You have successfully defended the perimeter using the Neural Combat Interface.<br />
+                    The NCI program has been deemed <strong>OPERATIONAL</strong>.<br />
+                    Your performance data has been submitted for review.
+                </div>
+                <div class="victory-stats" id="victoryStats"></div>
+                <button class="menu-btn" onclick="UI.showScreen('screen-menu')">⌂ RETURN TO BASE</button>
+            </div>
+        </div>
+        <!-- ════════════════════ GLOBAL UI ════════════════════ -->
+        <!-- Crosshair (Controlled by Mouse OR Face Tracking) -->
+        <div class="crosshair" id="crosshair">
+            <div class="ch-ring"></div>
+            <div class="ch-dot"></div>
+            <div class="ch-line ch-top"></div>
+            <div class="ch-line ch-bottom"></div>
+            <div class="ch-line ch-left"></div>
+            <div class="ch-line ch-right"></div>
+        </div>
+
+    </div><!-- /app -->
+
+    <script src="js/audio.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/enemies.js"></script>
+    <script src="js/levels.js"></script>
+    <script src="js/game.js"></script>
+
+    <script src="js/main.js"></script>
+    <!-- MediaPipe CJS bundle loaded locally — shim exports so classes are available as window.vision -->
+    <script>
+        // CJS shim: let the bundle write to window.exports, then alias as window.vision
+        window.exports = {};
+        window.module = { exports: window.exports };
+    </script>
+    <script src="js/vision_bundle.cjs.js"></script>
+    <script>
+        // After bundle runs, expose as window.vision
+        window.vision = window.exports;
+        // Alias top-level exports (FaceLandmarker, FilesetResolver, etc.) onto vision
+        if (window.module && window.module.exports) {
+            Object.assign(window.vision, window.module.exports);
+        }
+    </script>
+    <script src="js/tracker.js"></script>
+</body>
+
+</html>
