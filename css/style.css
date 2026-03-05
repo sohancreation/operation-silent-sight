@@ -1121,68 +1121,194 @@ body.tracking-active * {
 }
 
 /* ──────────────────────────────────────────────────────────────
-   RESPONSIVE — Small Screens & Portrait Mode
+   RESPONSIVE — Comprehensive Mobile Support
    ────────────────────────────────────────────────────────────── */
 
-/* Ensure all action groups wrap nicely */
-.complete-actions,
-.gameover-actions,
-.prologue-continue {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-  max-width: 480px;
-  padding: 0 16px;
-}
+/* ── Portrait Mobile & General Small Screens ── */
+@media screen and (max-width: 768px) {
+  .menu-title {
+    font-size: clamp(32px, 12vw, 60px);
+  }
 
-/* HUD top bar — prevent overflow on small screens */
-.hud-top {
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.hud-cell {
-  flex-shrink: 0;
-}
-
-/* Menu header shrinks gracefully */
-.menu-header {
-  padding: 0 16px;
-}
-
-@media (max-height: 700px) {
-  .menu-header {
-    margin-bottom: 20px;
+  .menu-title span {
+    font-size: clamp(24px, 10vw, 48px);
   }
 
   .menu-nav {
+    max-width: 90%;
     gap: 8px;
   }
 
   .menu-btn {
-    padding: 8px 24px;
-  }
-}
-
-@media (max-width: 500px) {
-  .menu-btn {
-    font-size: 10px;
+    padding: 12px 20px;
+    font-size: 11px;
     letter-spacing: 1px;
-    padding: 10px 16px;
-  }
-
-  .menu-nav {
-    max-width: 100%;
-    padding: 0 8px;
-  }
-
-  .hud-top {
-    padding: 6px 8px;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
   }
 
   .briefing-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .brief-card {
+    padding: 16px;
+  }
+
+  .complete-stats,
+  .victory-stats {
     grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .stat-block {
+    padding: 12px;
+  }
+
+  .stat-block .stat-value {
+    font-size: 18px;
+  }
+
+  /* HUD Overlays */
+  .hud-top {
+    padding: 8px 12px;
+  }
+
+  .hud-bottom {
+    padding: 8px 12px;
+  }
+
+  .hud-val {
+    font-size: 13px;
+  }
+
+  .hud-label {
+    font-size: 8px;
+    letter-spacing: 1px;
+  }
+
+  /* Shrink HUD Center - hidden on very small portrait */
+  .hud-center-cell {
+    display: none;
+  }
+
+  /* Scale Accuracy Bar */
+  .hud-acc-bar-wrap {
+    width: 80px;
+  }
+
+  /* Scale Ammo Pips */
+  .ammo-pip {
+    width: 6px;
+    height: 14px;
+  }
+}
+
+/* ── Landscape Mobile (Optimized for Gameplay) ── */
+@media screen and (max-width: 930px) and (orientation: landscape) {
+  .menu-header {
+    margin-bottom: 24px;
+  }
+
+  .menu-title {
+    font-size: 40px;
+  }
+
+  .menu-nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 100%;
+  }
+
+  .menu-btn {
+    width: auto;
+    min-width: 160px;
+    padding: 8px 16px;
+  }
+
+  .hud-top,
+  .hud-bottom {
+    padding: 4px 12px;
+  }
+
+  .hud-center-cell {
+    display: block;
+    /* show back in landscape */
+  }
+
+  .briefing-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .level-intro-box {
+    padding: 24px 32px;
+    max-width: 90%;
+  }
+
+  .prologue-container {
+    padding: 20px;
+  }
+
+  .prologue-text {
+    font-size: 13px;
+    min-height: 150px;
+  }
+}
+
+/* ── Fix for notched phones / safe areas ── */
+@supports (padding: env(safe-area-inset-top)) {
+  .hud-top {
+    padding-top: max(12px, env(safe-area-inset-top));
+  }
+
+  .hud-bottom {
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+  }
+
+  .hud-top {
+    padding-left: max(20px, env(safe-area-inset-left));
+    padding-right: max(20px, env(safe-area-inset-right));
+  }
+
+  .hud-bottom {
+    padding-left: max(20px, env(safe-area-inset-left));
+    padding-right: max(20px, env(safe-area-inset-right));
+  }
+}
+
+/* ── Hide crosshair if using touch (it follows finger) ── */
+@media (pointer: coarse) {
+  #crosshair {
+    /* Optional: make it slightly larger or transparent for better visibility under finger */
+    width: 60px;
+    height: 60px;
+    opacity: 0.8;
+  }
+
+  /* Disable hover effects on touch devices to avoid "stuck" states */
+  .menu-btn:hover::before {
+    display: none;
+  }
+}
+
+/* ── Orientation Warning ── */
+#orientation-warning {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  color: var(--amber);
+  z-index: 100000;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px;
+}
+
+@media screen and (max-width: 600px) and (orientation: portrait) {
+  #orientation-warning {
+    display: flex;
   }
 }

@@ -24,6 +24,11 @@ const Game = (() => {
         window.addEventListener('dblclick', onDoubleClick);
         window.addEventListener('contextmenu', e => { e.preventDefault(); activateSpecial(); });
         window.addEventListener('keydown', e => { if (e.key === 'q' || e.key === 'Q') activateSpecial(); });
+
+        // Mobile Touch Listeners
+        window.addEventListener('touchstart', onTouchStart, { passive: false });
+        window.addEventListener('touchmove', onTouchMove, { passive: false });
+        window.addEventListener('touchend', onTouchEnd, { passive: false });
     }
 
     function resize() {
@@ -410,6 +415,51 @@ const Game = (() => {
     function onDoubleClick(e) {
         if (!state.running) return;
         reload();
+    }
+
+    // ── TOUCH HANDLERS ──
+    let lastTouchTime = 0;
+    function onTouchStart(e) {
+        if (!state.running) return;
+        const now = performance.now();
+        const touch = e.touches[0];
+
+        // Handle double-tap for reload
+        if (now - lastTouchTime < 300) {
+            reload();
+            lastTouchTime = 0; // prevent triple-tap re-triggering
+            e.preventDefault();
+            return;
+        }
+        lastTouchTime = now;
+
+        updateTouchPosition(touch);
+
+        // Only trigger shoot if not hitting a UI button
+        const tag = e.target ? e.target.tagName : '';
+        if (tag === 'BUTTON' || (e.target && e.target.classList && e.target.classList.contains('menu-btn'))) return;
+
+        shoot();
+        e.preventDefault();
+    }
+
+    function onTouchMove(e) {
+        if (!state.running) return;
+        const touch = e.touches[0];
+        updateTouchPosition(touch);
+        e.preventDefault();
+    }
+
+    function onTouchEnd(e) {
+        // Just prevents default browser behavior (zoom, scroll)
+        if (state.running) e.preventDefault();
+    }
+
+    function updateTouchPosition(touch) {
+        const rect = canvas.getBoundingClientRect();
+        state.mouseX = touch.clientX - rect.left;
+        state.mouseY = touch.clientY - rect.top;
+        UI.updateCrosshair(touch.clientX, touch.clientY);
     }
 
     function activateSpecial() {
