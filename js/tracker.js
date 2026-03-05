@@ -58,7 +58,7 @@ window.EyeTracker = (function () {
         var FilesetResolver = vision.FilesetResolver;
 
         FilesetResolver
-            .forVisionTasks("./js/wasm")
+            .forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/wasm")
             .then(function (vObj) {
                 return FaceLandmarker.createFromOptions(vObj, {
                     baseOptions: {
