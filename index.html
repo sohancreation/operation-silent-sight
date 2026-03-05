@@ -299,19 +299,14 @@
 
     <script src="js/main.js"></script>
     <!-- MediaPipe CJS bundle loaded locally — shim exports so classes are available as window.vision -->
+    <!-- MediaPipe Vision SDK from CDN for reliability -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3" crossorigin="anonymous"></script>
     <script>
-        // CJS shim: let the bundle write to window.exports, then alias as window.vision
-        window.exports = {};
-        window.module = { exports: window.exports };
-    </script>
-    <script src="js/vision_bundle.cjs.js"></script>
-    <script>
-        // After bundle runs, expose as window.vision
-        window.vision = window.exports;
-        // Alias top-level exports (FaceLandmarker, FilesetResolver, etc.) onto vision
-        if (window.module && window.module.exports) {
-            Object.assign(window.vision, window.module.exports);
-        }
+        // Alias for compatibility with tracker.js
+        window.vision = {
+            FaceLandmarker: FaceLandmarker,
+            FilesetResolver: FilesetResolver
+        };
     </script>
     <script src="js/tracker.js"></script>
 </body>
